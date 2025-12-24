@@ -138,29 +138,6 @@ function EventSetupForm ({onCreated, allEvents}) {
     );
 }
 
-function displayTime(eventTime) {
-    // console.log(eventTime);
-    let [hours, minutes]  = eventTime.split(':').map(Number);
-    const ampm = hours >= 12? "PM" : "AM";
-    hours = String(hours % 12 || 12).padStart(2, '0');
-    minutes = String(minutes).padStart(2, '0');
-    return `${hours} : ${minutes} ${ampm}`;
-}
-
-function displayDuration(duration) {
-    const Hours = Math.floor(Number(duration) / 60);
-    const minutes = Number(duration) % 60;
-    return Hours? `${Hours} hr ${minutes} mins` : `${minutes} mins`;
-}
-
-function addTime(talkTime, duration) {
-    const [hours, minutes]  = talkTime.split(':').map(Number);
-    const totalminutes = (hours * 60) + minutes + Number(duration);
-    const newHours = Math.floor(totalminutes / 60);
-    const newMinutes = totalminutes % 60;
-    return `${newHours}:${newMinutes}`;
-}   
-
 function EventEditor({ event, onBack, onSaved }) {
     const [talks, setTalks] = useState(event.talks || []);
     const [title, setTitle] = useState("");
@@ -198,6 +175,33 @@ function EventEditor({ event, onBack, onSaved }) {
         return null;
     }
 
+    async function genPDF(event) {
+        console.log(event);
+        try {
+            const response = await api.get(`/events/pdf/${event._id}`, {
+                responseType: 'blob',
+            });
+
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'Event_Schedule.pdf');
+
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+
+            window.URL.revokeObjectURL(url);
+            toast.success(response.data.message);
+
+        } catch (err) {
+            console.error("PDF Generation Error", err);
+            toast.error("Unable to generate PDF!");
+        }
+    } 
+
     return (
         <div>
             <ScrollToTop />
@@ -213,6 +217,7 @@ function EventEditor({ event, onBack, onSaved }) {
 
                 <button onClick={addTalk}>Add</button>
                 <button onClick={onSave}>Save</button>
+                <button onClick={() => genPDF(event)}>Generate PDF</button>
             </div>
             <div  className="table-wrapper">
                 <table className="talk-table">
@@ -248,3 +253,29 @@ function EventEditor({ event, onBack, onSaved }) {
         </div>
     );
 }
+
+
+//==============HELPER FUNCTIONS==============================
+function displayTime(eventTime) {
+    // console.log(eventTime);
+    let [hours, minutes]  = eventTime.split(':').map(Number);
+    const ampm = hours >= 12? "PM" : "AM";
+    hours = String(hours % 12 || 12).padStart(2, '0');
+    minutes = String(minutes).padStart(2, '0');
+    return `${hours} : ${minutes} ${ampm}`;
+}
+
+function displayDuration(duration) {
+    const Hours = Math.floor(Number(duration) / 60);
+    const minutes = Number(duration) % 60;
+    return Hours? `${Hours} hr ${minutes} mins` : `${minutes} mins`;
+}
+
+function addTime(talkTime, duration) {
+    const [hours, minutes]  = talkTime.split(':').map(Number);
+    const totalminutes = (hours * 60) + minutes + Number(duration);
+    const newHours = Math.floor(totalminutes / 60);
+    const newMinutes = totalminutes % 60;
+    return `${newHours}:${newMinutes}`;
+}   
+//================================================================

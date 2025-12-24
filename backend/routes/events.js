@@ -1,6 +1,7 @@
 import express from "express";
 import Event from "../models/Event.js";
 import authorizer from "../middleware/auth.js";
+import generateEventPDF from "../services/pdfgen.js";
 
 const router = express.Router();
 
@@ -25,7 +26,7 @@ router.post("/events", authorizer, async (req, res) => {
 
 router.get("/events", authorizer, async (req,res) => {
     try {
-        console.log(req.user._id);
+        // console.log(req.user._id);
         const events = await Event.find({createdBy: req.user._id});
         res.status(200).json(events);
     } catch (err) {
@@ -61,6 +62,21 @@ router.put("/events/:eventId/save-talks", async (req, res) => {
         res.status(200).json({message: " saved successfully"});
     } catch (err) {
         console.log("Server Error", err);
+    }
+});
+
+
+router.get("/events/pdf/:id", async (req, res) => {
+    try {
+        const event = await Event.findById(req.params.id);
+        if (!event) return res.status(404).send("Event not found");
+        const pdfBuffer = await generateEventPDF(event);
+        res.contentType("application/pdf");
+        res.setHeader("Content-Disposition", `attachment: filename=${event.eventname}.pdf}`);
+        res.send(pdfBuffer);
+    } catch (err) {
+        res.status(500).json({message: err.message});
+        console.log(err)
     }
 });
 
