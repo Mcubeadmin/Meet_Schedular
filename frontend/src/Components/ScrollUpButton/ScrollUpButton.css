@@ -1,0 +1,42 @@
+.scroll-up-btn {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+
+  width: 20px;
+  height: 55px;
+  border-radius: 50%;
+  border: none;
+  outline: none;
+
+  background: #3f3f3f;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+
+  align-content: center;
+  justify-content: center;
+  display: flex;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.scroll-up-btn.show {
+  opacity: 0.5;
+  pointer-events: auto;
+  transform: translateY(0);
+  z-index: 999;
+}
+
+.scroll-up-btn:hover {
+  background: #202020;
+}
+
+.scroll-up-btn svg {
+    font-size: 24px;
+    color: white;
+}

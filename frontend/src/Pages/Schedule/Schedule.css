@@ -1,0 +1,130 @@
+.schedular-organize {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+.left-panel {
+    flex: 1;
+    background-color: #f5f5f5;
+    border-width: 2px;
+    
+}
+
+.right-panel {
+    flex: 1;
+    background: #f5f5f5;
+    padding: 20px;
+    border-width: 8px;
+}
+
+.right-panel h2 {
+    margin-top: -5px;
+}
+
+.schedule-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 400px;
+    margin: 5vh;
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.form-row label {
+    width: 140px;       /* fixed width for all labels */
+    font-weight: 600;
+    text-align: left;
+    display: inline-block;
+    margin: 10px;
+}
+
+.form-row input {
+    flex: 1;            /* input expands automatically */
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+
+.talk-input::placeholder {
+    color: white; /* Replace with your desired color (e.g., Tomato) */
+    opacity: 1;     /* Optional: Firefox lowers the opacity by default, set to 1 for full color */
+}
+
+.add-talk {
+    display:flex;
+    background-color: #f5f5f5;
+    justify-content: center;
+    align-items: center;
+    padding:20px
+}
+
+.talk-input {
+    display: flexbox;
+    padding:10px;
+    margin: 20px;
+    border-radius: 10px;
+}
+
+.talk-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.talk-table th,
+.talk-table td {
+    border: 1px solid #ccc;
+    padding: 10px 12px;
+    text-align: center;
+}
+
+.talk-table th {
+    background-color: #cecece;
+    font-weight: 600;
+}
+
+.talk-table tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.talk-table td:nth-child(3) {
+  text-align: left;
+}
+
+.table-wrapper {
+    margin: 0 24px;
+    margin-bottom: 10px;
+}
+
+@media screen and (max-width: 768px) {
+    .schedular-organize {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    }
+
+    .left-panel {
+        flex: 1;
+        background-color: #f5f5f5;
+        border-width: 2px;
+        
+    }
+
+    .right-panel {
+        flex: 1;
+        background: #f5f5f5;
+        padding: 20px;
+        border-width: 8px;
+    }
+}
+

@@ -1,0 +1,146 @@
+.MuiAppBar-root.navbar {
+  background: transparent !important; /* override MUI background */
+  box-shadow: none !important;
+  position: fixed;
+  height: 100px;
+  /* border-bottom: none;*/
+  backdrop-filter: blur(6px) saturate(120%);
+  transition:
+    background-color 350ms ease,
+    box-shadow 350ms ease,
+    backdrop-filter 450ms ease;
+}
+
+.MuiAppBar-root.navbar-scrolled {
+  background: rgba(8, 8, 12, 0.72) !important; /* glass effect */
+  backdrop-filter: blur(6px) saturate(120%);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    transition:
+    box-shadow 350ms ease,
+    backdrop-filter 450ms ease;
+  /* z-index: 10;  */
+}
+
+.navbar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  height: 20vh;
+  padding-top: 1%;
+  background: linear-gradient(
+    to top,
+    #03020200,
+    #040404
+  );
+  pointer-events: none;
+}
+
+
+
+.mobile-menu-icon {
+  display: none !important;
+}
+
+.navbar-toolbar {
+  padding-left: 24px;
+  padding-right: 24px;
+  color: white;
+  z-index: 3;
+  display: flex;
+  height: 80px;
+  justify-content:space-between;
+  align-items: center;
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+
+.navbar-logo {
+  margin-top: -10px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.navbar-brand-travels {
+    font-family: "Great Vibes";
+    font-size: 1.8rem;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+
+.navbar-link {
+  font-weight: bold;
+  padding-left: 10px !important;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  color: wheat !important;
+}
+
+.navbar-login-btn {
+  background: rgb(0, 24, 117) !important;
+  font-weight: bold;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+}
+
+.navbar-login-btn:hover {
+  background: #000756 !important;
+}
+
+.navbar-login-btn-r {
+  background: rgb(13, 112, 198) !important;
+  font-weight: bold;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+}
+
+.navbar-login-btn-r:hover {
+  background: rgb(11, 100, 177) !important;
+}
+
+@media screen and (max-width: 768px) {        
+
+  .navbar-right {
+    display: none !important;
+  }
+
+  .mobile-menu-icon {
+    display: block !important;
+    padding: 0;
+  }
+
+  .navbar-toolbar {
+    padding-right: 5%;
+    padding-left: 5%;
+  }
+
+  .mobile-drawer {
+    width: 50%;
+  }
+
+  .mobile-drawer .MuiDrawer-paper {
+    width: 80%;
+    max-width: 300px;
+
+  }
+  .mobile-drawer .MuiListItemText-primary {
+    font-weight: bold;
+    color: #000;
+    text-align: left;
+    padding: 10px;
+    font-size: x-large;
+  }
+  
+}
