@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
-export default function authorizer(req, res, next) {
+export default async function authorizer(req, res, next) {
     const authHeader = req.headers.authorization;
 
     if ( !authHeader || !authHeader.startsWith("Bearer ")) {
@@ -12,7 +13,7 @@ export default function authorizer(req, res, next) {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        req.user = decoded;
+        req.user = await User.findById(decoded.id).select("-password");
 
         next();
     } catch (err) {

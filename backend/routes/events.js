@@ -1,26 +1,32 @@
 import express from "express";
 import Event from "../models/Event.js";
+import authorizer from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.post("/events", async (req, res) => {
-    const event = req.body;
+router.post("/events", authorizer, async (req, res) => {
+    try {
+        const event = req.body;
 
-    await Event.create({
-        eventname: event.eventname,
-        start: event.start,
-        end: event.end,
-        date: event.date,
-        id: event.id,
-        talks: event.talks
-    });
-    res.json({message: "Saved", event});
+        const newEvent = await Event.create({
+            eventname: event.eventname,
+            start: event.start,
+            end: event.end,
+            date: event.date,
+            id: event.id,
+            talks: event.talks,
+            createdBy: req.user._id
+        });
+        res.json({message: "Saved", event: newEvent});
+    } catch (err) {
+        res.status(500).json({message: "Server Error", err})
+    }
 });
 
-router.get("/events", async (req,res) => {
-    console.log("Events sent")
+router.get("/events", authorizer, async (req,res) => {
     try {
-        const events = await Event.find({});
+        console.log(req.user._id);
+        const events = await Event.find({createdBy: req.user._id});
         res.status(200).json(events);
     } catch (err) {
         res.status(500).json({ msg: "Server Error", error: err.message});

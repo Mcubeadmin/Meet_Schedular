@@ -24,6 +24,17 @@ export default function Home(){
     return(
         <div className="home-page">
             <section>
+                <video
+                    className="video-hero__video"
+                    autoPlay
+                    muted
+                    loop={true}
+                    playsInline
+                    preload="metadata"
+                    poster=""
+                >
+                    <source src="seminar.mp4" type="video/mp4" />
+                </video>
                 <div className="video-hero__overlay">
                     <div className="video-hero__content">
                         <h1>Organize your Events with ease!</h1>

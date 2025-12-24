@@ -30,7 +30,7 @@ export default function Schedule() {
     return (
         <div style={{marginTop:"6rem"}}>
             {editingEvent ? (
-                    <EventEditor event={editingEvent} onBack={() => setEditingEvent(null)}/>
+                    <EventEditor onSaved={() => setRefresh(prev => !prev)} event={editingEvent} onBack={() => setEditingEvent(null)}/>
                 ) : (   
                 <><h1>Event Schedular</h1>
                 <div className="schedular-organize">
@@ -39,7 +39,7 @@ export default function Schedule() {
                     </div>
                     <div className="right-panel">
                         <h2>All Created Events</h2>
-                        <EventView refresh={refresh} onCreated={() => setRefresh(prev => !prev)} onEdit={(event) => setEditingEvent(event) } allEvents={allEvents} />
+                        <EventView onCreated={() => setRefresh(prev => !prev)} onEdit={(event) => setEditingEvent(event) } allEvents={allEvents} />
                     </div>
                 </div></>
                 )}
@@ -47,7 +47,7 @@ export default function Schedule() {
     );
 }
 
-function EventView ({refresh, onEdit, onCreated, allEvents}) {
+function EventView ({onEdit, onCreated, allEvents}) {
     const sortedEvents = [...allEvents].sort((a, b) => b.id - a.id);
 
     const handleDelete = async (ev) => {
@@ -161,7 +161,7 @@ function addTime(talkTime, duration) {
     return `${newHours}:${newMinutes}`;
 }   
 
-function EventEditor({ event, onBack }) {
+function EventEditor({ event, onBack, onSaved }) {
     const [talks, setTalks] = useState(event.talks || []);
     const [title, setTitle] = useState("");
     const [duration, setDuration] = useState("");
@@ -185,6 +185,7 @@ function EventEditor({ event, onBack }) {
         try {
             const response = await api.put(`/events/${event.id}/save-talks`, talks);
             toast.success("Event " + response.data.message);
+            onSaved();
         } catch (err) {
             toast.error("Error: " + err.message);
         }

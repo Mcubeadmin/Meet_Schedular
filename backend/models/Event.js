@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { MongooseError } from "mongoose";
 const talksSchema = new mongoose.Schema({
     presenter: String,
     title: { type: String, required: true },
@@ -32,7 +32,13 @@ const eventSchema = new mongoose.Schema({
         required: true
     },
 
-    talks: [talksSchema]
+    talks: [talksSchema],
+
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    }
 }, {timestamps: true});
 
 const Event = mongoose.model("Event", eventSchema);
