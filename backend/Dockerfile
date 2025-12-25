@@ -1,27 +1,26 @@
-FROM ghcr.io/puppeteer/puppeteer:latest
+FROM node:20-slim
 
-# Switch to root to ensure we can set up the app directory
-USER root
+# Install latest chrome dev package and fonts to support major charsets
+RUN apt-get update \
+    && apt-get install -y wget gnupg \
+    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+    && apt-get update \
+    && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
+      --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set the path to exactly where the browser lives in THIS image
+# Set the path for the chrome we just installed
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
 WORKDIR /usr/src/app
 
-# Copy package files
 COPY package*.json ./
-
-# Install dependencies
 RUN npm ci
 
-# Copy the rest of the code
 COPY . .
 
-# Fix permissions for the pptruser (required by this specific image)
-RUN chown -R pptruser:pptruser /usr/src/app
-
-# Switch back to the non-root user for security
-USER pptruser
+EXPOSE 5000
 
 CMD ["node", "index.js"]
