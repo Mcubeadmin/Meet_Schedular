@@ -101,6 +101,6 @@ const generateEventPDF = async (event) => {
     await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
     const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
     await browser.close();
-    return pdfBuffer;
+    return pdfBuffer; 
 };
 export default generateEventPDF;
