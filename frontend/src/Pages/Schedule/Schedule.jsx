@@ -143,10 +143,14 @@ function EventEditor({ event, onBack, onSaved }) {
     const [title, setTitle] = useState("");
     const [duration, setDuration] = useState("");
     const [presenter, setPresenter] = useState("");
+    const [exceedTimeLimit, setExceedTimeLimit] = useState(false);
     let talkend = "";
     let talkstart = "";
-
     
+    useEffect(() => {
+        setExceedTimeLimit(talks[talks.length - 1].talkend > (event.end || 0));
+    });
+
     const addTalk = () => {
         if (!title || !duration || duration < 0) return toast.error("Invalid Input!");
         talkstart = talks[talks.length - 1]?.talkend || event.start;
@@ -156,7 +160,7 @@ function EventEditor({ event, onBack, onSaved }) {
         setDuration("");    
         setPresenter("");
     };
-
+    
     // console.log(JSON.stringify({id: event.id, talks: talks,}))
     const onSave = async () => {
         try {
@@ -219,6 +223,7 @@ function EventEditor({ event, onBack, onSaved }) {
                 <button onClick={onSave}>Save</button>
                 <button onClick={() => genPDF(event)}>Generate PDF</button>
             </div>
+            <h4 style={{color:"red", alignSelf:"left"}}>{exceedTimeLimit? "Schedule exceeds event end time!": ""}</h4>
             <div  className="table-wrapper">
                 <table className="talk-table">
                     <colgroup>
