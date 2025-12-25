@@ -19,7 +19,6 @@ function displayDuration(duration) {
 
 const generateEventPDF = async (event) => {
     const browser = await puppeteer.launch({ headless: "new",
-      executablePath: executablePath(),
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox", 
