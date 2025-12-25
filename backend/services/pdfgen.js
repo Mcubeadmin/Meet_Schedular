@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import puppeteer, { executablePath } from "puppeteer";
 
 function displayTime(eventTime) {
     // console.log(eventTime);
@@ -19,13 +19,13 @@ function displayDuration(duration) {
 
 const generateEventPDF = async (event) => {
     const browser = await puppeteer.launch({ headless: "new",
+      executablePath: executablePath(),
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox", 
         "--disable-dev-shm-usage",
         "--single-process"
     ],
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || null,
     });
     const page = await browser.newPage();
 
@@ -67,10 +67,16 @@ const generateEventPDF = async (event) => {
       <body>
         <div class="header">
           <p class="event-title">${event.eventname}</p>
-          <p class="event-details">Date: ${event.date} | Time: ${displayTime(event.start)} to ${displayTime(event.end)}</p>
+          <p class="event-details">Date: ${event.date} | Time: ${displayTime(event.start)} ${event.end? `to ${displayTime(event.end)}` : ""}</p>
         </div>
 
         <table>
+          <colgroup>
+              <col style={{ width: "20%" }} />
+              <col style={{ width: "20%" }} />
+              <col style={{ width: "50%" }} />
+              <col style={{ width: "10%" }} />
+          </colgroup>
           <thead>
             <tr>
               <th>Start Time - End Time</th>
