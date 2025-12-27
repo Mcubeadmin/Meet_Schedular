@@ -151,7 +151,7 @@ function EventEditor({ event, onBack, onSaved }) {
     let talkstart = "";
     
     useEffect(() => {
-        setExceedTimeLimit(talks[talks.length - 1].talkend > (event.end || 0));
+        setExceedTimeLimit(talks[talks.length - 1]?.talkend > (event.end || 0));
     });
 
     const addTalk = () => {

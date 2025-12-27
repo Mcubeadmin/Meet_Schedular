@@ -41,7 +41,7 @@
 
 }
 
-.home-Btn {
+button.home-Btn.MuiButton-root {
     /* width: 50px;
     height: 50px; */
 
@@ -168,6 +168,12 @@
     min-height: 200px;
     font-size: larger;
 
+}
+
+.video-hero-btn {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
 }
 
 @keyframes pulse {

@@ -6,13 +6,13 @@ import './App.css'
 import ProtectedRoute from './Components/ProtectedRoute.jsx'
 
 const About = lazy(() => import('./Pages/About/About.jsx'));
-const Home = lazy(() => import('./Pages/Home/Home.jsx'));
 const Login = lazy(() => import('./Pages/Login/Login.jsx'));
 const Verify = lazy(() => import('./Pages/Login/Verify.jsx'));
 const Register = lazy(() => import('./Pages/Login/Register.jsx'));
 const Schedule = lazy(() => import('./Pages/Schedule/Schedule.jsx'));
 const NotFound = lazy(() => import('./Pages/NotFound.jsx'));
 
+import Home from "./Pages/Home/Home.jsx";
 import Navbar from "./Components/Navbar/Navbar.jsx"
 import Footer from "./Components/Footer/Footer.jsx"
 import LoadingModal from "./Components/Loading.jsx";

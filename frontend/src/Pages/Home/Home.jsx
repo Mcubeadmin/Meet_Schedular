@@ -20,6 +20,22 @@ export default function Home(){
         
     }, [location.state, toastShown, navigate, location.pathname]); 
     
+    const homeButtonSx = {                
+        margin: '2rem',
+        background: '#3f3f3f',
+        color: 'white',
+        fontSize: '12px',
+        fontWeight: 'bold',
+        fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
+        boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+        textTransform: 'none', // Prevents MUI from forcing uppercase
+        '&:hover': {
+        background: '#2f2f2f', // Need to define hover manually with sx
+        },
+        cursor: 'pointer',
+        pointerEvents: 'auto',
+        minWidth:'auto'
+    }
 
     return(
         <div className="home-page">
@@ -39,10 +55,12 @@ export default function Home(){
                     <div className="video-hero__content">
                         <h1>Organize your Events with ease!</h1>
                         <p className="video-hero__subtitle">Your one stop helper to create Agenda and Schedule your events</p>
-                        <Button variant="contained" className="home-Btn" component={Link} to="/about">Learn more</Button>
+                        <Button variant="contained" 
+                        sx={homeButtonSx}
+                        className="home-Btn" component={Link} to="/about">Learn more</Button>
                         <Button 
                         variant="contained" 
-                        className="home-Btn" 
+                        sx={homeButtonSx}
                         component="a"
                         href="https://github.com/Mcubeadmin/Meet_Schedular/tree/main"
                         target="_blank"
