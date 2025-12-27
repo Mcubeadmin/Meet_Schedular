@@ -105,6 +105,11 @@
     margin-bottom: 10px;
 }
 
+.add-talk-btn{
+    display: flex;
+    padding: 0px;
+}
+
 @media screen and (max-width: 768px) {
     .schedular-organize {
     display: flex;
@@ -126,5 +131,29 @@
         padding: 20px;
         border-width: 8px;
     }
+
+    .add-talk {
+        display: flex;
+        flex-direction: column;
+        background-color: #f5f5f5;
+        justify-content: center;
+        align-items: center;
+        padding:20px;
+        
+    }
+    
+    .add-talk button{
+        display: flex;
+        flex-direction: row;
+    }
+
+    .talk-input {
+        display: flexbox;
+        width: 100%;
+        padding: 8px;
+        margin: 5px;
+        border-radius: 10px;
+    }   
+
 }
 

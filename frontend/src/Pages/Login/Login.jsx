@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import LoadingModal from "../../Components/Loading";
 import "./Login.css"
 
 export default function Login() {
@@ -8,12 +9,12 @@ export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [msg, setMsg] = useState("");
-
+    const [isLoading, setIsLoading] = useState(false);
     //{import.meta.env.VITE_API_URL}
 
     async function handleLogin(e) {
         e.preventDefault();
-
+        setIsLoading(true);
         try {
             console.log(`${import.meta.env.VITE_API_URL}`)
             const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
@@ -37,10 +38,14 @@ export default function Login() {
         } catch (err) {
             console.error(err);
             setMsg("Server error");
-        }
+        } finally {
+            setIsLoading(false);
+        } 
     }
 
     return (
+        <>
+        <LoadingModal open={isLoading} />
         <div className="login-container">
             <form className="login-form" onSubmit={handleLogin}>
                 <h2>Login</h2>
@@ -67,5 +72,6 @@ export default function Login() {
                 <Link className="register-link" to="/register">New user? Please register</Link>
             </form>
         </div>
+        </>
     );
 }

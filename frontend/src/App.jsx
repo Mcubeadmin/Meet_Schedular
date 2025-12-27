@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import React, { lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import './App.css'
 
 import ProtectedRoute from './Components/ProtectedRoute.jsx'
@@ -15,6 +15,7 @@ const NotFound = lazy(() => import('./Pages/NotFound.jsx'));
 
 import Navbar from "./Components/Navbar/Navbar.jsx"
 import Footer from "./Components/Footer/Footer.jsx"
+import LoadingModal from "./Components/Loading.jsx";
 
 import ScrollToTop from './Components/ScrollUpButton/ScrollToTop.jsx'
 import ScrollUpButton from "./Components/ScrollUpButton/ScrollUpButton.jsx";
@@ -23,7 +24,7 @@ function App() {
   return (
     <BrowserRouter>
       <Toaster position="top-center" />
-      <Suspense fallback={<div style={{margin: "100px"}}>Loading Page...</div>}>
+      <Suspense fallback={<LoadingModal open={true}/>}>
       <ScrollToTop />
       <Navbar />
         <main className='main-content'>

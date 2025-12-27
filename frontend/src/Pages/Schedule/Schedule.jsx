@@ -6,7 +6,9 @@ import ScrollToTop from "../../Components/ScrollUpButton/ScrollToTop.jsx";
 import ArrowBack from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
 // import SaveIcon from "@mui/icons-material/Save";
-import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import LoadingModal from "../../Components/Loading.jsx";
 import api from "../../api/axios.js";
 
 export default function Schedule() {
@@ -144,6 +146,7 @@ function EventEditor({ event, onBack, onSaved }) {
     const [duration, setDuration] = useState("");
     const [presenter, setPresenter] = useState("");
     const [exceedTimeLimit, setExceedTimeLimit] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false);
     let talkend = "";
     let talkstart = "";
     
@@ -175,15 +178,21 @@ function EventEditor({ event, onBack, onSaved }) {
 
     function deleteRow(indexToremove) {
         const newtalks = talks.filter((_, index) => index !== indexToremove);
+        for (indexToremove; indexToremove < newtalks.length; indexToremove++){
+            newtalks[indexToremove].talkstart = newtalks[indexToremove - 1]?.talkend || event.start;
+            newtalks[indexToremove].talkend = addTime(newtalks[indexToremove].talkstart, newtalks[indexToremove].duration);
+        }
         setTalks(newtalks);
         return null;
     }
 
     async function genPDF(event) {
         console.log(event);
+        setIsGenerating(true);
         try {
             const response = await api.get(`/events/pdf/${event._id}`, {
                 responseType: 'blob',
+                timeout: 30000,
             });
 
 
@@ -198,30 +207,34 @@ function EventEditor({ event, onBack, onSaved }) {
             link.parentNode.removeChild(link);
 
             window.URL.revokeObjectURL(url);
-            toast.success(response.data.message);
+            toast.success(response.data.message || "PDF Generated Successfully!");
 
         } catch (err) {
             console.error("PDF Generation Error", err);
             toast.error("Unable to generate PDF!");
+        } finally {
+            setIsGenerating(false);
         }
     } 
 
     return (
         <div>
             <ScrollToTop />
-            <div style={{display:"flex"}}>
-                <button onClick={onBack}><ArrowBack /></button>
+            <LoadingModal open={isGenerating} message="Generating PDF! Please wait!" />
+            <div style={{display:"flex", padding:"10px"}}>
+                <button style={{fontSize:"2px", borderRadius:"30%"}} onClick={onBack}><ArrowBack /></button>
+
                 <h2>{event.eventname} on {event.date} | {displayTime(event.start)} {event.end? " to " + displayTime(event.end) : ""}</h2>
             </div>
             <div className="add-talk">
-                <h3>Add Talk: </h3>
                 <input className="talk-input" placeholder="Presenter" type="text" value={presenter} onChange={e => setPresenter(e.target.value)} required />
                 <input className="talk-input" placeholder="Talk title" value={title} onChange={e => setTitle(e.target.value)} required />
                 <input className="talk-input" placeholder="Duration (mins)" type="number" value={duration} onChange={e => setDuration(e.target.value)} required />
-
-                <button onClick={addTalk}>Add</button>
+                <div className="add-talk-btn">
+                <button onClick={addTalk}>Add Section</button>
                 <button onClick={onSave}>Save</button>
                 <button onClick={() => genPDF(event)}>Generate PDF</button>
+                </div>
             </div>
             <h4 style={{color:"red", alignSelf:"left"}}>{exceedTimeLimit? "Schedule exceeds event end time!": ""}</h4>
             <div  className="table-wrapper">
@@ -249,7 +262,20 @@ function EventEditor({ event, onBack, onSaved }) {
                                 <td>{displayDuration(talk.duration)}</td>
                                 <td>{talk.title}</td>
                                 <td>{talk.presenter}</td>
-                                <td><button onClick={() => deleteRow(index)}><DeleteIcon fontSize="inherit"/></button></td>
+                                <td>
+                                    <IconButton 
+                                    size="small"
+                                    onClick={() => deleteRow(index)}
+                                    sx={{ 
+                                        color: 'error.main', // Standard MUI red
+                                        '&:hover': {
+                                        backgroundColor: 'rgba(211, 47, 47, 0.04)', // Light red hover tint
+                                        }
+                                    }}
+                                    >
+                                    <DeleteIcon fontSize="small" />
+                                    </IconButton>
+                                </td>
                             </tr>
                         ))}
                     </tbody>

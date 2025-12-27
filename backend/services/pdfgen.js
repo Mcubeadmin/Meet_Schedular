@@ -1,4 +1,5 @@
 import puppeteer, { executablePath } from "puppeteer";
+import fs from 'fs';
 
 function displayTime(eventTime) {
     // console.log(eventTime);
@@ -18,17 +19,23 @@ function displayDuration(duration) {
 
 
 const generateEventPDF = async (event) => {
-  const browser = await puppeteer.launch({
-    // Use the ENV variable from Docker, or fallback to default for local dev
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/google-chrome-stable',
+  const launchOptions = {
     headless: "new",
     args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--single-process"
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--single-process"
     ],
-  });
+  };
+
+  const envPath = process.env.PUPPETEER_EXECUTABLE_PATH;
+  if (envPath && fs.existsSync(envPath)) {
+    launchOptions.executablePath = envPath;
+  } else {
+    console.log("Using default local Chromium (No valid executablePath found)");
+  }
+  const browser = await puppeteer.launch(launchOptions);
 
   try {
 
