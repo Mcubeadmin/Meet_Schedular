@@ -96,10 +96,9 @@
     background-color: #fafafa;
 }
 
-.talk-table td:nth-child(3) {
+.talk-table td:nth-child(4) {
   text-align: left;
 }
-
 .table-wrapper {
     margin: 0 24px;
     margin-bottom: 10px;

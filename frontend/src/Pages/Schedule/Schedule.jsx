@@ -1,4 +1,4 @@
-import { Card } from "@mui/material";
+import { Card, Icon } from "@mui/material";
 import "./Schedule.css"
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -8,6 +8,8 @@ import EditIcon from "@mui/icons-material/Edit";
 // import SaveIcon from "@mui/icons-material/Save";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import LoadingModal from "../../Components/Loading.jsx";
 import api from "../../api/axios.js";
 
@@ -178,11 +180,24 @@ function EventEditor({ event, onBack, onSaved }) {
 
     function deleteRow(indexToremove) {
         const newtalks = talks.filter((_, index) => index !== indexToremove);
-        for (indexToremove; indexToremove < newtalks.length; indexToremove++){
-            newtalks[indexToremove].talkstart = newtalks[indexToremove - 1]?.talkend || event.start;
-            newtalks[indexToremove].talkend = addTime(newtalks[indexToremove].talkstart, newtalks[indexToremove].duration);
-        }
-        setTalks(newtalks);
+        const subtractDuration = Number(event.talks[indexToremove].duration) * -1;
+        // OLD LOGIC
+        // for (indexToremove; indexToremove < newtalks.length; indexToremove++){
+        //     newtalks[indexToremove].talkstart = newtalks[indexToremove - 1]?.talkend || event.start;
+        //     newtalks[indexToremove].talkend = addTime(newtalks[indexToremove].talkstart, newtalks[indexToremove].duration);
+        // }
+
+        const modifiedtalks = [...newtalks].map((talk, index) => {
+            if (index >= indexToremove){
+                return {
+                ...talk,
+                talkstart: addTime(talk.talkstart, subtractDuration),
+                talkend: addTime(talk.talkend, subtractDuration),
+                };
+            }
+            return talk;
+        });
+        setTalks(modifiedtalks);
         return null;
     }
 
@@ -215,7 +230,22 @@ function EventEditor({ event, onBack, onSaved }) {
         } finally {
             setIsGenerating(false);
         }
-    } 
+    }
+    
+    function moveRow(index, direction) {
+        const moveIndex = index + direction;
+        if (moveIndex >= talks.length || moveIndex < 0) return console.log("cannot move");
+        const newtalks = [...talks];
+        const moveTalk= talks[index];
+        newtalks[index] = talks[moveIndex];
+        newtalks[moveIndex] = moveTalk;
+        for (index = 0; index < newtalks.length; index++){
+            newtalks[index].talkstart = newtalks[index - 1]?.talkend || event.start;
+            newtalks[index].talkend = addTime(newtalks[index].talkstart, newtalks[index].duration);
+        }
+        setTalks(newtalks)
+        return;
+    }
 
     return (
         <div>
@@ -240,24 +270,40 @@ function EventEditor({ event, onBack, onSaved }) {
             <div  className="table-wrapper">
                 <table className="talk-table">
                     <colgroup>
-                        <col style={{ width: "25%" }} />
+                        <col style={{ width: "5%" }} />
+                        <col style={{ width: "20%" }} />
                         <col style={{ width: "10%" }} />
-                        <col style={{ width: "40%" }} />
+                        <col style={{ width: "45%" }} />
                         <col style={{ width: "15%" }} />
-                        <col style={{ width: "10%" }} />
+                        <col style={{ width: "5%" }} />
                     </colgroup>
                     <thead>
                         <tr>
+                            <th>Move</th>
                             <th>Start Time - End Time</th>
                             <th>Duration</th>
                             <th>Title</th>
                             <th>Presenter</th>
-                            <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
                         {talks.map((talk, index) => (
                             <tr key={index}>
+                                <td>
+                                    <IconButton
+                                        size="small"
+                                        color="primary"
+                                        aria-label="move-up"
+                                        onClick={() => moveRow(index, -1)}
+                                    ><ArrowUpwardIcon fontSize="small" /></IconButton>
+                                    <IconButton
+                                        size="small"
+                                        color="primary"
+                                        aria-label="move-up"
+                                        onClick={() => moveRow(index, 1)}
+                                    ><ArrowDownwardIcon fontSize="small" /></IconButton>
+                                </td>
                                 <td>{displayTime(talk.talkstart)} - {displayTime(talk.talkend)}</td>
                                 <td>{displayDuration(talk.duration)}</td>
                                 <td>{talk.title}</td>
