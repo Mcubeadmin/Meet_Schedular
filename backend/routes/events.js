@@ -47,14 +47,14 @@ router.delete("/events/:id", async (req, res) => {
     }
 });
 
-router.put("/events/:eventId/save-talks", async (req, res) => {
+router.put("/events/:eventId", async (req, res) => {
     try {
         const { eventId } = req.params;
-        const newTalk = req.body;
+        const {talks, eventheader, eventfooter} = req.body;
         
         const updatedEvent = await Event.findOneAndUpdate(
             {id: eventId},
-            {talks: newTalk},
+            {talks, eventheader, eventfooter},
             {new: true}
         );
 

@@ -34,6 +34,16 @@ const eventSchema = new mongoose.Schema({
 
     talks: [talksSchema],
 
+    eventheader: {
+        type: String,
+        default: ""
+    },
+
+    eventfooter: {
+        type: String,
+        default: ""
+    },
+
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",

@@ -36,9 +36,11 @@ const generateEventPDF = async (event) => {
     console.log("Using default local Chromium (No valid executablePath found)");
   }
   const browser = await puppeteer.launch(launchOptions);
-
+  
   try {
-
+    
+    const talksLength = event.talks.length
+    const endtimeExact = event.talks[talksLength-1]["talkend"];
     const page = await browser.newPage();
   
     const htmlContent = `
@@ -74,20 +76,40 @@ const generateEventPDF = async (event) => {
           }
   
           .title-cell { text-align: left; padding-left: 20px; }
+
+          .event-header-text {
+            margin-top: 15px;
+            font-size: 11pt;
+            color: #374151;
+          }
+
+          .event-footer {
+            margin-top: 40px;
+            padding-top: 15px;
+            border-top: 1px solid #9ca3af;
+            font-size: 10pt;
+            color: #4b5563;
+          }
+
         </style>
       </head>
       <body>
         <div class="header">
           <p class="event-title">${event.eventname}</p>
-          <p class="event-details">Date: ${event.date} | Time: ${displayTime(event.start)} ${event.end? `to ${displayTime(event.end)}` : ""}</p>
+          <p class="event-details">Date: ${event.date} | Time: ${displayTime(event.start)} ${endtimeExact? `to ${displayTime(endtimeExact)}` : ""}</p>
+          ${event.eventheader ? `
+            <div class="event-header-text">
+              ${event.eventheader}
+            </div>
+          ` : ""}
         </div>
-  
+
         <table>
           <colgroup>
-              <col style={{ width: "20%" }} />
-              <col style={{ width: "20%" }} />
-              <col style={{ width: "50%" }} />
-              <col style={{ width: "10%" }} />
+              <col style="width:30%" />
+              <col style="width:15%" />
+              <col style="width:40%" />
+              <col style="width:15%" />
           </colgroup>
           <thead>
             <tr>
@@ -108,6 +130,11 @@ const generateEventPDF = async (event) => {
             `).join('')}
           </tbody>
         </table>
+        ${event.eventfooter ? `
+        <div class="event-footer">
+          ${event.eventfooter}
+        </div>
+`       : ""}
       </body>
     </html>`;
   

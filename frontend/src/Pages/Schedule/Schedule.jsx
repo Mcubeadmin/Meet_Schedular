@@ -12,6 +12,7 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import LoadingModal from "../../Components/Loading.jsx";
 import api from "../../api/axios.js";
+import RichTextBox from "../../Components/RichTextBox.jsx";
 
 export default function Schedule() {
     const [refresh, setRefresh] = useState(false);
@@ -103,7 +104,7 @@ function EventSetupForm ({onCreated, allEvents}) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const eventData = {eventname, start, end, date, id: Date.now(), talks: []};
+            const eventData = {eventname, start, end, date, id: Date.now(), talks: [], eventheader: "", eventfooter: ""};
             if (isDuplicate(eventData)) return toast.error("Event already Exists!"); 
             const response = await api.post("/events", eventData);
             toast.success("Event added!");
@@ -149,6 +150,8 @@ function EventEditor({ event, onBack, onSaved }) {
     const [presenter, setPresenter] = useState("");
     const [exceedTimeLimit, setExceedTimeLimit] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [headerText, setHeaderText] = useState(event.eventheader || "");
+    const [footerText, setFooterText] = useState(event.eventfooter || "");
     let talkend = "";
     let talkstart = "";
     
@@ -169,7 +172,11 @@ function EventEditor({ event, onBack, onSaved }) {
     // console.log(JSON.stringify({id: event.id, talks: talks,}))
     const onSave = async () => {
         try {
-            const response = await api.put(`/events/${event.id}/save-talks`, talks);
+            const response = await api.put(`/events/${event.id}`, {
+                talks,
+                eventheader: headerText,
+                eventfooter: footerText
+            });
             toast.success("Event " + response.data.message);
             onSaved();
         } catch (err) {
@@ -267,6 +274,11 @@ function EventEditor({ event, onBack, onSaved }) {
                 </div>
             </div>
             <h4 style={{color:"red", alignSelf:"left"}}>{exceedTimeLimit? "Schedule exceeds event end time!": ""}</h4>
+            <h4 style={{textAlign:"left", paddingLeft:"30px"}}>Schedule header:</h4>
+            <RichTextBox
+                value={headerText}
+                onChange={setHeaderText}
+            />
             <div  className="table-wrapper">
                 <table className="talk-table">
                     <colgroup>
@@ -326,6 +338,11 @@ function EventEditor({ event, onBack, onSaved }) {
                         ))}
                     </tbody>
                 </table>
+            <h4 style={{textAlign:"left", paddingLeft:"30px"}}>Schedule Footer:</h4>
+            <RichTextBox
+                value={footerText}
+                onChange={setFooterText}
+            />
             </div>
         </div>
     );
