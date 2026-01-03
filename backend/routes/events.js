@@ -66,13 +66,15 @@ router.put("/events/:eventId", async (req, res) => {
 });
 
 
-router.get("/events/pdf/:id", async (req, res) => {
+router.post("/events/pdf", async (req, res) => {
     try {
-        const event = await Event.findById(req.params.id);
-        if (!event) return res.status(404).send("Event not found");
+        const event = req.body;
         const pdfBuffer = await generateEventPDF(event);
-        res.contentType("application/pdf");
-        res.setHeader("Content-Disposition", `attachment: filename=${event.eventname}.pdf}`);
+        res.setHeader("Content-type", "application/pdf");
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="${event.eventname || "schedule"}.pdf"`
+        );
         res.send(pdfBuffer);
     } catch (err) {
         res.status(500).json({message: err.message});

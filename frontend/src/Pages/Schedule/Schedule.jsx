@@ -230,7 +230,8 @@ function EventEditor({ event, onBack, onSaved, isLoggedIn }) {
 
     function deleteRow(indexToremove) {
         const newtalks = talks.filter((_, index) => index !== indexToremove);
-        const subtractDuration = Number(event.talks[indexToremove].duration) * -1;
+        console.log(event);
+        const subtractDuration = Number(talks[indexToremove].duration) * -1;
         // OLD LOGIC
         // for (indexToremove; indexToremove < newtalks.length; indexToremove++){
         //     newtalks[indexToremove].talkstart = newtalks[indexToremove - 1]?.talkend || event.start;
@@ -255,11 +256,18 @@ function EventEditor({ event, onBack, onSaved, isLoggedIn }) {
         console.log(event);
         setIsGenerating(true);
         try {
-            const response = await api.get(`/events/pdf/${event._id}`, {
-                responseType: 'blob',
-                timeout: 30000,
-            });
+            const newevent = {
+                    ...event,
+                    talks: [...talks],
+                    eventheader: headerText,
+                    eventfooter: footerText
+                }
 
+            const response = await api.post(
+                "/events/pdf",
+                newevent,
+                { responseType: "blob", timeout: 30000 }
+            );
 
             const url = window.URL.createObjectURL(new Blob([response.data]));
 
