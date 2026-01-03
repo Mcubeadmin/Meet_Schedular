@@ -33,9 +33,9 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/schedule"
               element={
-                <ProtectedRoute>
+                // <ProtectedRoute>
                 <Schedule />
-                </ProtectedRoute>
+                // </ProtectedRoute>
                 } />
             <Route path="/login" element={<Login />} />
             <Route path="/verify" element={<Verify />} />

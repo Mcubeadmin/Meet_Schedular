@@ -13,29 +13,68 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import LoadingModal from "../../Components/Loading.jsx";
 import api from "../../api/axios.js";
 import RichTextBox from "../../Components/RichTextBox.jsx";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth.jsx";
 
 export default function Schedule() {
+    const navigate = useNavigate();
     const [refresh, setRefresh] = useState(false);
     const [editingEvent, setEditingEvent] = useState(null);
+    const { isLoggedIn } = useAuth();
+    
     
     const [allEvents, setAllEvents] = useState([]);
     const fetchMyEvents = async () => {
+        if (!isLoggedIn) return;
+        console.log("Fetched")
         try {
             const { data } = await api.get("/events");
+            console.log(data);
             setAllEvents(data);
         } catch (err) {
             console.error("Fetch Failed", err.respose?.data?.msg);
             toast.error("Fetch Failed");
+            localStorage.removeItem("token")
+            window.dispatchEvent(new Event("authChange"));
+            navigate("/login", {state: {message: 'Please Login!'} });
         }
     };
+    
     useEffect(() => {
         fetchMyEvents();
-    }, [refresh]);
+    }, [refresh, isLoggedIn]);
     
+    if (!isLoggedIn){
+        return (
+            <div style={{marginTop:"6rem"}}>
+                {editingEvent ? (
+                        <EventEditor onSaved={() => setRefresh(prev => !prev)} event={editingEvent} onBack={() => setEditingEvent(null)} isLoggedIn={isLoggedIn}/>
+                    ) : (   
+                    <><h1>Event Schedular</h1>
+                    <div className="schedular-organize">
+                        <div className="left-panel">
+                            <EventSetupForm onCreated={(event) => {
+                                if (!isLoggedIn){
+                                    setEditingEvent(event);
+                                } else {
+                                    setRefresh(prev => !prev)
+                                }
+                            }} allEvents={allEvents} isLoggedIn={isLoggedIn} />
+                        </div>
+                        <div className="right-panel">
+                            <h2>All Created Events</h2>
+                            <Card><p>Please Login to Save Events!</p></Card>
+                        </div>
+                    </div></>
+                    )}
+            </div>
+        );
+    }
+
     return (
         <div style={{marginTop:"6rem"}}>
             {editingEvent ? (
-                    <EventEditor onSaved={() => setRefresh(prev => !prev)} event={editingEvent} onBack={() => setEditingEvent(null)}/>
+                    <EventEditor onSaved={() => setRefresh(prev => !prev)} event={editingEvent} onBack={() => setEditingEvent(null)} isLoggedIn={isLoggedIn}/>
                 ) : (   
                 <><h1>Event Schedular</h1>
                 <div className="schedular-organize">
@@ -67,25 +106,25 @@ function EventView ({onEdit, onCreated, allEvents}) {
         }
     };
 
+    if (sortedEvents.length === 0) {
+        return <Card><p>No Events Added Yet!</p></Card>
+    }
+
     return (
         <div>
-            {sortedEvents && sortedEvents.length > 0?
-                (sortedEvents.map(ev => (
-                    <Card key={ev.id} style={{padding: "10px", marginBottom: "10px"}}>
-                        <p>Event: {ev.eventname} | Date: {ev.date}</p>
-                        <p>{displayTime(ev.start)} - {ev.end? displayTime(ev.end) : "No end time defined"}</p>
-                        <button onClick={() => onEdit(ev)} ><EditIcon fontSize="inherit" /></button>
-                        <button onClick={() => handleDelete(ev)}><DeleteIcon fontSize="inherit"/></button>
-                    </Card>
-                ))
-            ) : (
-                <h3>No Events Added</h3>
-            )}
+            {sortedEvents.map(ev => (
+                <Card key={ev.id} style={{padding: "10px", marginBottom: "10px"}}>
+                    <p>Event: {ev.eventname} | Date: {ev.date}</p>
+                    <p>{displayTime(ev.start)} - {ev.end? displayTime(ev.end) : "No end time defined"}</p>
+                    <button onClick={() => onEdit(ev)} ><EditIcon fontSize="inherit" /></button>
+                    <button onClick={() => handleDelete(ev)}><DeleteIcon fontSize="inherit"/></button>
+                </Card>
+            ))}
         </div>
     );
 }
 
-function EventSetupForm ({onCreated, allEvents}) {
+function EventSetupForm ({onCreated, allEvents, isLoggedIn}) {
     const [eventname, setEventName] = useState("");
     const [start, setStart] = useState("");
     const [end, setEnd] = useState("");
@@ -105,6 +144,10 @@ function EventSetupForm ({onCreated, allEvents}) {
         e.preventDefault();
         try {
             const eventData = {eventname, start, end, date, id: Date.now(), talks: [], eventheader: "", eventfooter: ""};
+            if (!isLoggedIn) {
+                onCreated(eventData);
+                return;
+            }
             if (isDuplicate(eventData)) return toast.error("Event already Exists!"); 
             const response = await api.post("/events", eventData);
             toast.success("Event added!");
@@ -143,7 +186,7 @@ function EventSetupForm ({onCreated, allEvents}) {
     );
 }
 
-function EventEditor({ event, onBack, onSaved }) {
+function EventEditor({ event, onBack, onSaved, isLoggedIn }) {
     const [talks, setTalks] = useState(event.talks || []);
     const [title, setTitle] = useState("");
     const [duration, setDuration] = useState("");
@@ -269,7 +312,14 @@ function EventEditor({ event, onBack, onSaved }) {
                 <input className="talk-input" placeholder="Duration (mins)" type="number" value={duration} onChange={e => setDuration(e.target.value)} required />
                 <div className="add-talk-btn">
                 <button onClick={addTalk}>Add Section</button>
-                <button onClick={onSave}>Save</button>
+                <button 
+                    disabled={!isLoggedIn} 
+                    title={!isLoggedIn? "Login to Save Events!" : ""}
+                    onClick={onSave}   style={{
+                    opacity: isLoggedIn ? 1 : 0.5,
+                    cursor: isLoggedIn ? "pointer" : "not-allowed"
+                }}
+                >Save</button>
                 <button onClick={() => genPDF(event)}>Generate PDF</button>
                 </div>
             </div>

@@ -4,6 +4,7 @@ import "swiper/css";
 import toast from "react-hot-toast";
 import "./Home.css"
 import { Button } from "@mui/material";
+import TypewriterText from "../../Components/TypeWriterText";
 
 export default function Home(){
     const [toastShown, setToastShown] = useState(false);
@@ -37,6 +38,14 @@ export default function Home(){
         minWidth:'auto'
     }
 
+    const messages = [
+        "Organize your Events with ease!",
+        "Create agendas in minutes.",
+        "Design schedules that just work.",
+        "Export professional PDFs instantly."
+    ];
+
+
     return(
         <div className="home-page">
             <section>
@@ -53,8 +62,8 @@ export default function Home(){
                 </video>
                 <div className="video-hero__overlay">
                     <div className="video-hero__content">
-                        <h1>Organize your Events with ease!</h1>
-                        <p className="video-hero__subtitle">Your one stop helper to create Agenda and Schedule your events</p>
+                        <h1><TypewriterText texts={messages} /><span className="cursor">|</span></h1>
+                        <p>Create your Schedule and download the PDF now! Click the Schedule tab!</p>
                         <Button variant="contained" 
                         sx={homeButtonSx}
                         className="home-Btn" component={Link} to="/about">Learn more</Button>
