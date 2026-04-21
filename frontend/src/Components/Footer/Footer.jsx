@@ -35,10 +35,10 @@ export default function Footer() {
             <div className="footer-bottom">
                 <div className="footer-left">
                     <img src={logo} alt="logo" className="footer-logo" />
-                    <p className="footer-copy">2025 Ⓒ Event Planner. All rights reserved</p>
+                    <p className="footer-copy">2025 Ⓒ Agenda Creator. All rights reserved</p>
                 </div>
                 <div className="footer-social">
-                    <a href="https://x.com/MCUBE_87" target="_blank" rel="noopener noreferrer"><FaLinkedinIn /></a>
+                    <a href="https://www.linkedin.com/in/mohammed-mujahid-m/" target="_blank" rel="noopener noreferrer"><FaLinkedinIn /></a>
                     <a href="https://x.com/MCUBE_87" target="_blank" rel="noopener noreferrer"><FaTwitter /></a>
                     <a href="https://github.com/Mcubeadmin" target="_blank" rel="noopener noreferrer"><FaGithub /></a>
                 </div>

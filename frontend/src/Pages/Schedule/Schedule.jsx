@@ -171,10 +171,10 @@ function EventSetupForm ({onCreated, allEvents, isLoggedIn}) {
                 <input type="time" value={start} onChange={e => setStart(e.target.value)} required />
             </div>
 
-            <div className="form-row">
+            {/* <div className="form-row">
                 <label>End time (optional):</label>
                 <input type="time" value={end} onChange={e => setEnd(e.target.value)} />
-            </div>
+            </div> */}
 
             <div className="form-row">
                 <label>Event date:</label>

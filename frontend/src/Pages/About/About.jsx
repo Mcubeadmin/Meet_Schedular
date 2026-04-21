@@ -1,101 +1,117 @@
-export default function About() {
+import React from "react";
+import { motion } from "framer-motion";
+import {
+  Calendar,
+  PlusCircle,
+  ListOrdered,
+  ArrowUpDown,
+  FileText,
+  Save,
+  Cpu
+} from "lucide-react";
+import "./HelpPage.css";
+
+const steps = [
+  {
+    icon: Calendar,
+    title: "Create your event",
+    content:
+      "Start by defining the basics — give your event a name, pick a date, and set the starting time. You can optionally define an end time, but it's not required to begin building your agenda."
+  },
+  {
+    icon: PlusCircle,
+    title: "Add agenda sections",
+    content:
+      "For each speaker, enter their name, talk title, and how long they need. The system automatically assigns time slots, so you never have to calculate timings manually."
+  },
+  {
+    icon: ListOrdered,
+    title: "Build your flow",
+    content:
+      "As you add entries, your full agenda starts taking shape. Each section fits perfectly into the timeline without overlaps or gaps."
+  },
+  {
+    icon: ArrowUpDown,
+    title: "Reorder anytime",
+    content:
+      "Plans change — just move items up or down. The entire schedule updates instantly, keeping everything consistent without extra effort."
+  },
+  {
+    icon: FileText,
+    title: "Add context",
+    content:
+      "Include a header for meeting details or notes, and a footer for closing remarks or instructions. This gives your agenda a complete, professional feel."
+  },
+  {
+    icon: Save,
+    title: "Export or save",
+    content:
+      "Generate a clean PDF instantly. If you log in, you can save your events and come back later to edit or reuse them."
+  }
+];
+
+const StepCard = ({ step, index }) => {
+  const Icon = step.icon;
+
   return (
-    <div style={{ paddingTop: "5rem", paddingBottom: "5rem" }}>
-      <h1>About Event Planner</h1>
-      <p>
-        Create schedule and agenda for your events such as seminars, lectures,
-        or meetings and collaborate with ease.
+    <motion.div
+      className="card"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.1 }}
+    >
+      <div className="card-header">
+        <div className="badge">{index + 1}</div>
+        <Icon size={22} className="icon" />
+      </div>
+
+      <h3>{step.title}</h3>
+      <p>{step.content}</p>
+    </motion.div>
+  );
+};
+
+const HelpPage = () => {
+  return (
+    <div className="container">
+      <motion.h1
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        Plan events without the headache
+      </motion.h1>
+
+      <p className="subtitle">
+        Build structured agendas, adjust them instantly, and export clean PDFs —
+        all without touching a calculator.
       </p>
 
-      <section style={{ marginTop: "2rem" }}>
-        <h2>What is Event Planner?</h2>
+      <div className="grid">
+        {steps.map((step, i) => (
+          <StepCard key={i} step={step} index={i} />
+        ))}
+      </div>
+
+      <motion.div
+        className="card tech"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6 }}
+      >
+        <div className="card-header">
+          <Cpu size={20} />
+          <h3>Technical Overview</h3>
+        </div>
+
         <p>
-          Event Planner (Meet_Schedular) is a lightweight scheduling application
-          that simplifies meeting and event planning. It centralizes event
-          creation, invitations, and time-zone aware scheduling so teams and
-          individuals can coordinate without the back-and-forth.
+          Built using React and Node.js, the application dynamically computes
+          time slots based on duration and ordering. The scheduling engine
+          ensures a continuous timeline, while PDF generation produces a clean,
+          shareable agenda document.
         </p>
-      </section>
-
-      <section style={{ marginTop: "1.5rem" }}>
-        <h2>Key Components</h2>
-        <ul>
-          <li>
-            <strong>Frontend</strong> — User interface for creating and managing
-            events
-          </li>
-          <li>
-            <strong>Backend</strong> — APIs and business logic for persistence,
-            users, and invitations
-          </li>
-          <li>
-            <strong>Python utilities</strong> — Helper scripts for automation,
-            import/export, and maintenance
-          </li>
-        </ul>
-      </section>
-
-      <section style={{ marginTop: "1.5rem" }}>
-        <h2>Features</h2>
-        <ul>
-          <li>Create, edit, and delete meetings</li>
-          <li>Invite attendees and manage RSVPs</li>
-          <li>Support for recurring events</li>
-          <li>Time zone–aware scheduling</li>
-          <li>Responsive, easy-to-use UI</li>
-          <li>Modular architecture for easy extension</li>
-        </ul>
-      </section>
-
-      <section style={{ marginTop: "1.5rem" }}>
-        <h2>How it works (high level)</h2>
-        <ol>
-          <li>
-            The frontend lets users create and manage events and invitations.
-          </li>
-          <li>The backend exposes API endpoints to persist and manage data.</li>
-          <li>
-            Python utilities provide scripts for admin tasks, data import/export,
-            or integrations.
-          </li>
-        </ol>
-      </section>
-
-      <section style={{ marginTop: "1.5rem" }}>
-        <h2>Getting started</h2>
-        <p>
-          Clone the repository and follow the READMEs in the <code>frontend</code>
-          , <code>backend</code>, and <code>py_files</code> directories to run
-          locally:
-        </p>
-        <pre style={{ background: "#f6f8fa", padding: "0.75rem" }}>
-          <code>git clone https://github.com/Mcubeadmin/Meet_Schedular.git</code>
-        </pre>
-      </section>
-
-      <section style={{ marginTop: "1.5rem" }}>
-        <h2>Contributing</h2>
-        <p>
-          Contributions are welcome — fork the repo, create a branch, add tests
-          or docs as needed, and open a pull request. Report bugs or request
-          features via the repository issues.
-        </p>
-      </section>
-
-      <section style={{ marginTop: "1.5rem" }}>
-        <h2>Contact & Support</h2>
-        <p>
-          For questions or support, open an issue on GitHub:{' '}
-          <a
-            href="https://github.com/Mcubeadmin/Meet_Schedular/issues"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Project Issues
-          </a>
-          .
-        </p>
-      </section>
+      </motion.div>
     </div>
   );
-}
+};
+
+export default HelpPage;

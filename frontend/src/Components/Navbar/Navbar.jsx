@@ -111,8 +111,8 @@ export default function Navbar() {
           />
 
           <div variant="h6" sx={{ letterSpacing: 2 }}>
-            <span className="navbar-brand-travels">Event</span>
-            <span className="navbar-brand-travels">Planner</span>
+            <span className="navbar-brand-travels">Agenda</span>
+            <span className="navbar-brand-travels">Creator</span>
           </div>
 
         </Box>
